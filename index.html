@@ -1,1 +1,102 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<title>BOXING GAME 2.0</title>
+<style>
+:root{--bg:#080b10;--panel:#111720;--line:#2b3440;--text:#f4f6f8;--muted:#9aa5b1;--accent:#ff4b4b;--blue:#3d8bfd}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+button{font:inherit;color:inherit;border:0;cursor:pointer}
+#app{width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 15%,#18202b 0,#080b10 58%)}
+.screen{width:min(100%,760px);height:100%;padding:calc(env(safe-area-inset-top) + 14px) 16px calc(env(safe-area-inset-bottom) + 14px);display:flex;flex-direction:column;gap:12px}
+.hidden{display:none!important}.top{display:flex;justify-content:space-between;align-items:center}
+.brand{font-weight:900;letter-spacing:2px;font-size:20px}.badge{font-size:11px;color:#aeb8c4;border:1px solid #394453;border-radius:999px;padding:5px 9px}
+.panel{background:rgba(17,23,32,.96);border:1px solid var(--line);border-radius:18px;box-shadow:0 16px 50px #0007}
+.home{justify-content:center}.logo{text-align:center;font-size:48px;font-weight:1000;letter-spacing:4px}.subtitle{text-align:center;color:var(--muted)}
+.menu{display:grid;gap:11px;margin-top:16px}.btn{min-height:54px;border-radius:13px;background:#202a36;border:1px solid #394554;font-weight:800}
+.btn.primary{background:var(--accent);border-color:#ff6868}.btn.secondary{background:#182333}.small{font-size:12px;color:var(--muted);text-align:center;line-height:1.5}
+.section{padding:16px}.section h2{font-size:18px;margin:0 0 12px}.choices{display:flex;gap:8px;overflow:auto;padding-bottom:3px}
+.choice{min-width:78px;height:52px;border-radius:12px;background:#1b2430;border:1px solid #364150;font-size:12px}.choice.active{outline:2px solid var(--accent)}
+.stat{margin:11px 0}.statline{display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px}.range{width:100%;accent-color:var(--accent)}
+.fighterPreview{height:190px;display:flex;align-items:flex-end;justify-content:center;position:relative;overflow:hidden;background:linear-gradient(#121a26,#0c1118);border-radius:14px}
+.fighter{position:relative;width:92px;height:160px;transform-origin:bottom center}.fighter .head{position:absolute;width:48px;height:48px;border-radius:50%;left:22px;top:3px;background:#b87552;z-index:3}
+.fighter .hair{position:absolute;width:52px;height:25px;border-radius:28px 28px 12px 12px;left:20px;top:0;background:#241b19;z-index:4}
+.fighter .body{position:absolute;width:68px;height:78px;left:12px;top:45px;background:#2d78d5;border-radius:28px 28px 16px 16px}
+.fighter .shorts{position:absolute;width:70px;height:40px;left:11px;top:113px;background:#242a33;border-radius:8px}
+.fighter .arm{position:absolute;width:22px;height:66px;top:52px;background:#b87552;border-radius:15px}.fighter .arm.l{left:-3px;transform:rotate(15deg)}.fighter .arm.r{right:-3px;transform:rotate(-15deg)}
+.fighter .leg{position:absolute;width:25px;height:60px;top:138px;background:#b87552;border-radius:14px}.fighter .leg.l{left:18px}.fighter .leg.r{right:18px}
+.fight{padding:10px 10px 12px}.topbar{display:flex;align-items:center;gap:8px}.timer{font-size:24px;font-weight:900;min-width:74px;text-align:center}
+.hpwrap{flex:1}.hpname{font-size:11px;color:var(--muted);margin-bottom:4px}.bar{height:13px;border-radius:99px;background:#29313b;overflow:hidden}.fill{height:100%;transition:width .15s}.playerFill{background:#36c978}.enemyFill{background:var(--accent)}
+.canvas{position:relative;flex:1;min-height:280px;border-radius:16px;overflow:hidden;background:linear-gradient(#202a38 0 55%,#17202a 55% 100%);border:1px solid #394554}
+.canvas:before{content:"";position:absolute;left:0;right:0;top:55%;height:45%;background:repeating-linear-gradient(0deg,transparent 0 27px,#26313d 28px 29px),linear-gradient(90deg,transparent 0 9%,#b8bec6 9% 10%,transparent 10% 90%,#b8bec6 90% 91%,transparent 91%);opacity:.55}
+.ropes{position:absolute;left:0;right:0;top:53%;height:20px;border-top:3px solid #dce1e5;border-bottom:3px solid #8d969f}.spot{position:absolute;bottom:11%;width:30%;height:8%;border-radius:50%;background:#0006;filter:blur(5px)}.spot.p{left:8%}.spot.e{right:8%}
+.boxer{position:absolute;bottom:10%;width:78px;height:145px;transition:transform .16s}.boxer .head{position:absolute;width:40px;height:40px;border-radius:50%;top:0;left:19px;background:#b87552;z-index:4}
+.boxer .hair{position:absolute;width:44px;height:20px;border-radius:22px 22px 8px 8px;top:-1px;left:17px;background:#241b19;z-index:5}
+.boxer .body{position:absolute;top:38px;left:10px;width:58px;height:66px;border-radius:22px 22px 12px 12px;background:#2e75cf}
+.boxer.enemy .body{background:#b82d36}.boxer .shorts{position:absolute;top:94px;left:10px;width:58px;height:35px;border-radius:6px;background:#20262f}
+.boxer .arm{position:absolute;top:45px;width:18px;height:58px;border-radius:12px;background:#b87552;z-index:3}.boxer .arm.l{left:1px}.boxer .arm.r{right:1px}
+.boxer .glove{position:absolute;width:20px;height:20px;border-radius:50%;background:#f04a4a;bottom:-6px;left:-1px}.boxer.enemy .glove{background:#3d8bfd}
+.boxer .leg{position:absolute;top:123px;width:20px;height:45px;border-radius:12px;background:#b87552}.boxer .leg.l{left:19px}.boxer .leg.r{right:19px}
+.boxer.player{left:12%}.boxer.enemy{right:12%;transform:scaleX(-1)}
+.boxer.attack{transform:translateX(36px) scale(1.03)}.boxer.enemy.attack{transform:translateX(-36px) scale(1.03)}
+.boxer.guard .arm.l{transform:rotate(55deg)}.boxer.guard .arm.r{transform:rotate(-55deg)}
+.boxer.weave{transform:translateY(20px) rotate(-7deg)}.boxer.enemy.weave{transform:translateY(20px) rotate(7deg)}
+.boxer.hit{animation:hit .2s linear}@keyframes hit{0%{transform:translateX(0)}50%{transform:translateX(22px) rotate(8deg)}100%{transform:translateX(0)}}
+.controls{display:grid;grid-template-columns:1fr 1fr;gap:7px}.controls button{min-height:45px;border-radius:11px;background:#202a36;border:1px solid #3a4654;font-size:12px;font-weight:800}
+.controls .attack{background:#702b32}.controls .def{background:#203f62}.status{text-align:center;font-size:12px;color:#aeb8c4;min-height:18px}
+.flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none}.flash.on{animation:flash .18s}@keyframes flash{0%{opacity:.7}100%{opacity:0}}
+.result{position:absolute;inset:0;background:#070a0ecc;display:flex;align-items:center;justify-content:center;text-align:center;z-index:20}
+.resultBox{padding:28px;width:86%;border-radius:20px;background:#121923;border:1px solid #394554}.result h1{margin:0 0 8px;font-size:38px}.result p{color:var(--muted)}
+</style>
+</head>
+<body><div id="app"></div>
+<script>
+const app=document.getElementById('app');
+const state={screen:'home',skin:'#b87552',hair:'#241b19',height:1,weight:70,power:60,speed:60,step:60,tough:60,guard:false,playerHP:100,enemyHP:100,time:180,running:false};
 
+function renderHome(){app.innerHTML=`<main class="screen home"><div class="brand">BOXING GAME <span class="badge">PROTOTYPE 2.0</span></div><div><div class="logo">🥊 BOXING</div><div class="subtitle">Mobile Boxing Prototype</div></div><div class="menu"><button class="btn primary" onclick="startFight()">경기 시작</button><button class="btn secondary" onclick="renderCustom()">내 복서 만들기</button></div><div class="small">아이폰 터치 조작 · 오프라인 싱글 플레이<br>현재 버전은 테스트용 프로토타입입니다.</div></main>`}
+
+function renderCustom(){app.innerHTML=`<main class="screen"><div class="top"><div class="brand">MY BOXER</div><button class="btn" style="min-height:38px;padding:0 14px" onclick="renderHome()">뒤로</button></div>
+<div class="fighterPreview panel"><div class="fighter" style="transform:scaleY(${state.height})"><div class="hair" style="background:${state.hair}"></div><div class="head" style="background:${state.skin}"></div><div class="body"></div><div class="arm l" style="background:${state.skin}"></div><div class="arm r" style="background:${state.skin}"></div><div class="shorts"></div><div class="leg l" style="background:${state.skin}"></div><div class="leg r" style="background:${state.skin}"></div></div></div>
+<section class="panel section"><h2>피부색</h2><div class="choices">${['#7a4934','#9a5e43','#b87552','#d29570','#edb895'].map((c,i)=>`<button class="choice ${state.skin===c?'active':''}" style="background:${c}" onclick="state.skin='${c}';renderCustom()">${['진한색','갈색','중간','밝은색','아주 밝은색'][i]}</button>`).join('')}</div>
+<h2 style="margin-top:18px">헤어스타일</h2><div class="choices">${['#171717','#3b2418','#7b4b2a','#d2a03c','#d8d8d8'].map((c,i)=>`<button class="choice ${state.hair===c?'active':''}" style="background:${c}" onclick="state.hair='${c}';renderCustom()">${['숏컷','갈색','브라운','블론드','실버'][i]}</button>`).join('')}</div>
+<div class="stat"><div class="statline"><span>키</span><b>${Math.round(160+state.height*25)} cm</b></div><input class="range" type="range" min=".85" max="1.15" step=".01" value="${state.height}" oninput="state.height=+this.value;renderCustom()"></div>
+<div class="stat"><div class="statline"><span>체급</span><b>${state.weight} kg</b></div><input class="range" type="range" min="50" max="100" value="${state.weight}" oninput="state.weight=+this.value;renderCustom()"></div></section>
+<section class="panel section"><h2>능력치</h2>${[['power','주먹 파워'],['speed','주먹 속도'],['step','스텝 속도'],['tough','맷집']].map(x=>`<div class="stat"><div class="statline"><span>${x[1]}</span><b>${state[x[0]]}</b></div><input class="range" type="range" min="0" max="100" value="${state[x[0]]}" oninput="state['${x[0]}']=+this.value;renderCustom()"></div>`).join('')}</section>
+<button class="btn primary" onclick="startFight()">이 복서로 경기하기</button></main>`}
+
+function startFight(){state.playerHP=100;state.enemyHP=100;state.time=180;state.running=true;renderFight();last=performance.now();requestAnimationFrame(gameLoop)}
+
+function renderFight(){app.innerHTML=`<main class="screen fight"><div class="topbar"><div class="hpwrap"><div class="hpname">PLAYER</div><div class="bar"><div id="php" class="fill playerFill" style="width:${state.playerHP}%"></div></div></div><div id="timer" class="timer">3:00</div><div class="hpwrap"><div class="hpname" style="text-align:right">CPU</div><div class="bar"><div id="ehp" class="fill enemyFill" style="width:${state.enemyHP}%"></div></div></div></div>
+<div id="ring" class="canvas"><div class="ropes"></div><div class="spot p"></div><div class="spot e"></div>
+<div id="player" class="boxer player"><div class="hair"></div><div class="head"></div><div class="body"></div><div class="arm l"><div class="glove"></div></div><div class="arm r"><div class="glove"></div></div><div class="shorts"></div><div class="leg l"></div><div class="leg r"></div></div>
+<div id="enemy" class="boxer enemy"><div class="hair"></div><div class="head"></div><div class="body"></div><div class="arm l"><div class="glove"></div></div><div class="arm r"><div class="glove"></div></div><div class="shorts"></div><div class="leg l"></div><div class="leg r"></div></div>
+<div id="flash" class="flash"></div><div id="result" class="result hidden"><div class="resultBox"><h1 id="resultTitle"></h1><p id="resultText"></p><button class="btn primary" onclick="renderHome()">메인으로</button></div></div></div>
+<div id="status" class="status">거리 확보 후 공격하세요</div>
+<div class="controls"><button class="attack" onclick="act('jab')">JAB</button><button class="attack" onclick="act('straight')">STRAIGHT</button><button class="attack" onclick="act('hook')">HOOK</button><button class="attack" onclick="act('upper')">UPPER</button><button class="def" onclick="act('guard')">GUARD</button><button class="def" onclick="act('weave')">WEAVE</button><button class="def" onclick="act('duck')">DUCK</button><button class="def" onclick="act('step')">STEP</button></div>
+<button class="btn" style="min-height:40px" onclick="renderHome()">경기 나가기</button></main>`}
+
+function act(type){if(!state.running)return;const p=document.getElementById('player'),e=document.getElementById('enemy'),s=document.getElementById('status');
+if(type==='guard'||type==='weave'||type==='duck'){state.guard=type==='guard';p.className='boxer player '+(type==='guard'?'guard':'weave');s.textContent=type==='guard'?'가드!':type==='weave'?'위빙!':'더킹!';setTimeout(()=>p.className='boxer player',300);return}
+if(type==='step'){p.style.left='24%';s.textContent='스텝!';setTimeout(()=>p.style.left='12%',300);return}
+let base={jab:7,straight:10,hook:12,upper:14}[type]||8;let damage=Math.round(base*(.65+state.power/100));
+if(Math.random()<.14){s.textContent='상대가 피했습니다!';return}
+state.enemyHP=Math.max(0,state.enemyHP-damage);p.className='boxer player attack';setTimeout(()=>p.className='boxer player',160);e.classList.add('hit');
+const f=document.getElementById('flash');f.classList.remove('on');void f.offsetWidth;f.classList.add('on');s.textContent=`${type.toUpperCase()} 적중! -${damage}`;setTimeout(()=>e.classList.remove('hit'),220);updateBars();if(state.enemyHP<=0)endFight(true)}
+
+function cpu(){if(!state.running)return;const p=document.getElementById('player'),s=document.getElementById('status');
+if(Math.random()<.38){if(state.guard){s.textContent='패링 성공!';state.enemyHP=Math.max(0,state.enemyHP-7)}else if(Math.random()<.45){s.textContent='상대 공격 회피!'}else{const d=Math.round(5+Math.random()*8);state.playerHP=Math.max(0,state.playerHP-d);p.classList.add('hit');s.textContent=`상대 공격! -${d}`;setTimeout(()=>p.classList.remove('hit'),220)}}if(state.playerHP<=0)endFight(false);updateBars()}
+
+function updateBars(){const a=document.getElementById('php'),b=document.getElementById('ehp');if(a)a.style.width=state.playerHP+'%';if(b)b.style.width=state.enemyHP+'%'}
+
+let last=0,acc=0,cpuAcc=0;
+function gameLoop(ts){if(!state.running)return;const dt=(ts-last)/1000;last=ts;acc+=dt;cpuAcc+=dt;
+if(acc>=1){state.time--;acc=0;const t=document.getElementById('timer');if(t)t.textContent=Math.floor(state.time/60)+':'+String(state.time%60).padStart(2,'0');if(state.time<=0){endFight(state.playerHP>state.enemyHP);return}}
+if(cpuAcc>1.1){cpuAcc=0;cpu()}requestAnimationFrame(gameLoop)}
+function endFight(win){state.running=false;const r=document.getElementById('result');if(!r)return;r.classList.remove('hidden');document.getElementById('resultTitle').textContent=win?'VICTORY':'DEFEAT';document.getElementById('resultText').textContent=win?'상대 선수를 쓰러뜨렸습니다!':'아쉽습니다. 다시 도전해보세요.'}
+renderHome();
+</script>
+</body>
+</html>
