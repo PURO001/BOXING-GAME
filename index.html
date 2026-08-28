@@ -23,18 +23,50 @@ button{font:inherit;color:inherit;border:0;touch-action:manipulation}
 .shoulder{position:absolute;top:54px;width:30px;height:27px;border-radius:50%;background:#2f77d0;z-index:3}.enemy .shoulder{background:#b82f3b}.shoulder.l{left:18px}.shoulder.r{left:82px}
 
 /* 복싱 가드: 앞손은 코/눈 높이, 뒷손은 턱 아래. 팔 전체를 어깨 관절에 고정. */
-/* 2.7 관절형 팔: 상완 → 팔꿈치 → 전완 → 글러브. 팔꿈치가 항상 보이는 구조 */
-.arm{position:absolute;width:20px;height:39px;border-radius:11px;background:#b87552;z-index:4;will-change:transform;transform-origin:50% 7px}
-.arm.l{left:87px;top:57px;transform:rotate(-118deg)}
-.arm.r{left:19px;top:65px;transform:rotate(-42deg)}
-.forearm{position:absolute;left:0;top:31px;width:20px;height:40px;border-radius:11px;background:#b87552;transform-origin:50% 4px;transform:rotate(58deg);will-change:transform}
-.elbow{position:absolute;left:-2px;top:29px;width:24px;height:24px;border-radius:50%;background:#b87552;z-index:2;box-shadow:inset 0 0 0 2px #0001}
-.glove{position:absolute;left:-6px;bottom:-13px;width:32px;height:29px;border-radius:48%;background:var(--red);box-shadow:0 3px 7px #0009;z-index:5}.enemy .glove{background:var(--blue)}.glove:after{content:"";position:absolute;left:4px;right:4px;top:5px;height:5px;border-radius:5px;background:#fff4}
-.faceEye{position:absolute;top:20px;width:6px;height:6px;border-radius:50%;background:#15191d;z-index:9}.faceEye.near{left:52px}.faceEye.far{left:69px}
-.faceBrow{position:absolute;top:15px;width:13px;height:3px;border-radius:3px;background:#3a2721;z-index:9}.faceBrow.near{left:49px;transform:rotate(-5deg)}.faceBrow.far{left:66px;transform:rotate(5deg)}
-.nose{position:absolute;left:64px;top:24px;width:9px;height:10px;border-right:3px solid #87523e;border-bottom:3px solid #87523e;border-radius:0 0 7px 0;z-index:9}
-.mouth{position:absolute;left:55px;top:37px;width:19px;height:6px;border-bottom:2px solid #512d2a;border-radius:0 0 50% 50%;z-index:9}
-.ear{position:absolute;left:37px;top:19px;width:11px;height:17px;border:3px solid #9b624b;border-radius:50%;z-index:6}
+/* 2.8 자연스러운 오소독스 복싱 스탠스
+   참고 자세의 핵심: 왼발/왼쪽 몸이 앞, 뒷발은 뒤에 두고 무릎을 살짝 굽힘.
+   몸통은 상대를 정면으로 마주보지 않고 약간 옆으로 열며, 양 팔꿈치는 아래로 떨어뜨리고
+   앞손은 얼굴 앞, 뒷손은 턱/볼 옆에 둡니다. */
+.boxer{bottom:10%;height:230px}
+.bodyGroup{transform-origin:67px 145px}
+.torso{left:34px;top:54px;width:70px;height:79px;transform:rotate(-5deg)}
+.neck{left:59px;top:43px}
+.head{left:44px;top:1px;transform:rotate(-3deg)}
+.hair{left:41px;top:0}
+.shoulder{top:57px}.shoulder.l{left:22px}.shoulder.r{left:82px}
+
+/* 팔은 상완과 전완 두 마디로 연결. 팔꿈치는 몸통보다 앞/아래에 위치하여 기괴한 꺾임을 방지. */
+.arm{position:absolute;width:17px;height:38px;border-radius:10px;background:#b87552;z-index:4;will-change:transform;transform-origin:50% 6px}
+.arm.l{left:83px;top:58px;transform:rotate(-52deg)}
+.arm.r{left:25px;top:65px;transform:rotate(-30deg)}
+.elbow{position:absolute;left:-3px;top:27px;width:23px;height:23px;border-radius:50%;background:#b87552;z-index:2;box-shadow:none}
+.forearm{position:absolute;left:0;top:29px;width:17px;height:43px;border-radius:10px;background:#b87552;transform-origin:50% 5px;will-change:transform}
+.glove{position:absolute;left:-7px;bottom:-13px;width:31px;height:29px;border-radius:48%;background:var(--red);box-shadow:0 3px 6px #0008;z-index:5}
+.enemy .glove{background:var(--blue)}
+.glove:after{content:"";position:absolute;left:4px;right:4px;top:5px;height:5px;border-radius:5px;background:#fff4}
+
+/* 자연스러운 가드 위치: 앞손은 눈/코 앞, 뒷손은 턱/볼 옆 */
+.arm.l{transform:rotate(-55deg)}
+.arm.l .forearm{transform:rotate(115deg)}
+.arm.r{transform:rotate(-34deg)}
+.arm.r .forearm{transform:rotate(82deg)}
+
+/* 얼굴 */
+.faceEye{position:absolute;top:20px;width:6px;height:6px;border-radius:50%;background:#15191d;z-index:9}
+.faceEye.near{left:54px}.faceEye.far{left:68px}
+.faceBrow{position:absolute;top:15px;width:12px;height:3px;border-radius:3px;background:#3a2721;z-index:9}
+.faceBrow.near{left:51px;transform:rotate(-5deg)}.faceBrow.far{left:65px;transform:rotate(5deg)}
+.nose{position:absolute;left:65px;top:24px;width:8px;height:10px;border-right:3px solid #87523e;border-bottom:3px solid #87523e;border-radius:0 0 7px 0;z-index:9}
+.mouth{position:absolute;left:56px;top:37px;width:18px;height:6px;border-bottom:2px solid #512d2a;border-radius:0 0 50% 50%;z-index:9}
+.ear{position:absolute;left:38px;top:19px;width:11px;height:17px;border:3px solid #9b624b;border-radius:50%;z-index:6}
+
+/* 하체: 앞발이 화면 오른쪽, 뒷발이 화면 왼쪽. 무릎을 살짝 굽힌 안정된 자세 */
+.shorts{left:32px;top:126px;width:73px;height:40px;border-radius:8px;background:#252c35;z-index:3;transform:rotate(-3deg)}
+.leg{top:151px;width:23px;height:58px;border-radius:14px;background:#b87552;z-index:1;transform-origin:50% 5px}
+.leg.l{left:68px;transform:rotate(8deg)}.leg.r{left:35px;transform:rotate(-12deg)}
+.shoe{top:204px;width:40px;height:13px;border-radius:8px;background:#0c1117;z-index:2}
+.shoe.l{left:70px;transform:rotate(5deg)}.shoe.r{left:25px;transform:rotate(-7deg)}
+
 .shorts{position:absolute;left:30px;top:124px;width:76px;height:40px;border-radius:7px;background:#252c35;z-index:3}.leg{position:absolute;top:153px;width:26px;height:58px;border-radius:15px;background:#b87552;z-index:1}.leg.l{left:36px}.leg.r{left:76px}.shoe{position:absolute;top:204px;width:37px;height:12px;border-radius:8px;background:#0c1117;z-index:2}.shoe.l{left:27px}.shoe.r{left:73px}
 
 /* 앞손 잽: 코 앞 가드 -> 정확히 수평으로 전진 -> 즉시 회수 */
@@ -45,32 +77,29 @@ button{font:inherit;color:inherit;border:0;touch-action:manipulation}
 .hook .arm.l{animation:hookLead .5s cubic-bezier(.18,.78,.18,1)}
 .upper .arm.r{animation:upperRear .52s cubic-bezier(.18,.8,.18,1)}
 
-/* 팔꿈치가 굽혀진 가드 → 팔꿈치가 펴지는 펀치 */
+/* 펀치: 가드에서 시작 → 팔꿈치가 먼저 열리고 → 전완이 직선으로 펴짐 → 가드 복귀 */
+.jab .arm.l{animation:jabUpper .42s cubic-bezier(.16,.84,.18,1)}
 .jab .arm.l .forearm{animation:jabFore .42s cubic-bezier(.16,.84,.18,1)}
+.straight .arm.r{animation:straightUpper .52s cubic-bezier(.12,.86,.16,1)}
 .straight .arm.r .forearm{animation:straightFore .52s cubic-bezier(.12,.86,.16,1)}
-.hook .arm.l .forearm{animation:hookFore .5s cubic-bezier(.18,.78,.18,1)}
-.upper .arm.r .forearm{animation:upperFore .52s cubic-bezier(.18,.8,.18,1)}
-@keyframes jabFore{0%,20%{transform:rotate(58deg)}42%,68%{transform:rotate(0deg)}100%{transform:rotate(58deg)}}
-@keyframes straightFore{0%,18%{transform:rotate(48deg)}43%,70%{transform:rotate(0deg)}100%{transform:rotate(48deg)}}
-@keyframes hookFore{0%,25%{transform:rotate(58deg)}50%{transform:rotate(-45deg)}70%{transform:rotate(5deg)}100%{transform:rotate(58deg)}}
-@keyframes upperFore{0%,25%{transform:rotate(48deg)}52%{transform:rotate(-28deg)}70%{transform:rotate(0deg)}100%{transform:rotate(48deg)}}
-
+.hook .arm.l{animation:hookUpper .5s}.hook .arm.l .forearm{animation:hookFore .5s}
+.upper .arm.r{animation:upperUpper .52s}.upper .arm.r .forearm{animation:upperFore .52s}
 .attack .bodyGroup{animation:drive .42s ease-out}
-@keyframes drive{0%,100%{transform:translateX(0) rotate(0)}25%{transform:translateX(3px) rotate(1deg)}52%{transform:translateX(7px) rotate(2.2deg)}}
-/* 좌표계상 rotate(-90deg)가 팔을 오른쪽으로 정확히 눕힌다. */
-@keyframes jabLead{
-0%{transform:rotate(-118deg)}20%{transform:rotate(-104deg)}42%{transform:rotate(-90deg)}68%{transform:rotate(-90deg)}100%{transform:rotate(-118deg)}}
-@keyframes straightRear{
-0%{transform:rotate(-42deg)}18%{transform:rotate(-55deg)}43%{transform:rotate(-90deg)}70%{transform:rotate(-90deg)}100%{transform:rotate(-42deg)}}
-@keyframes hookLead{
-0%{transform:rotate(-118deg)}25%{transform:rotate(-82deg)}50%{transform:rotate(-58deg)}70%{transform:rotate(-82deg)}100%{transform:rotate(-118deg)}}
-@keyframes upperRear{
-0%{transform:rotate(-42deg)}25%{transform:rotate(-30deg) translateY(2px)}52%{transform:rotate(-62deg) translateY(-7px)}70%{transform:rotate(-52deg) translateY(-3px)}100%{transform:rotate(-42deg)}}
-.enemy.attack .bodyGroup{animation:driveE .42s ease-out}.enemy .arm.l,.enemy .arm.r{ } 
-@keyframes driveE{0%,100%{transform:translateX(0) rotate(0)}25%{transform:translateX(-3px) rotate(-1deg)}52%{transform:translateX(-7px) rotate(-2.2deg)}}
+@keyframes drive{0%,100%{transform:rotate(-2deg) translateX(0)}35%{transform:rotate(0deg) translateX(3px)}55%{transform:rotate(2deg) translateX(6px)}}
+@keyframes jabUpper{0%,18%{transform:rotate(-55deg)}45%,68%{transform:rotate(-90deg)}100%{transform:rotate(-55deg)}}
+@keyframes jabFore{0%,18%{transform:rotate(115deg)}45%,68%{transform:rotate(0deg)}100%{transform:rotate(115deg)}}
+@keyframes straightUpper{0%,18%{transform:rotate(-34deg)}45%,70%{transform:rotate(-90deg)}100%{transform:rotate(-34deg)}}
+@keyframes straightFore{0%,18%{transform:rotate(82deg)}45%,70%{transform:rotate(0deg)}100%{transform:rotate(82deg)}}
+@keyframes hookUpper{0%{transform:rotate(-55deg)}30%{transform:rotate(-80deg)}55%{transform:rotate(-62deg)}100%{transform:rotate(-55deg)}}
+@keyframes hookFore{0%{transform:rotate(115deg)}30%{transform:rotate(50deg)}55%{transform:rotate(20deg)}100%{transform:rotate(115deg)}}
+@keyframes upperUpper{0%{transform:rotate(-34deg)}30%{transform:rotate(-22deg)}55%{transform:rotate(-48deg)}100%{transform:rotate(-34deg)}}
+@keyframes upperFore{0%{transform:rotate(82deg)}30%{transform:rotate(60deg)}55%{transform:rotate(10deg)}100%{transform:rotate(82deg)}}
+
+.enemy.attack .bodyGroup{animation:driveE .42s ease-out} 
+@keyframes driveE{0%,100%{transform:rotate(2deg) translateX(0)}35%{transform:rotate(0) translateX(-3px)}55%{transform:rotate(-2deg) translateX(-6px)}}
 /* enemy는 scaleX(-1)로 좌우가 반전되므로 동일한 손 역할을 사용 */
 .enemy.jab .arm.l{animation:jabLead .42s cubic-bezier(.16,.84,.18,1)}.enemy.straight .arm.r{animation:straightRear .52s cubic-bezier(.12,.86,.16,1)}.enemy.hook .arm.l{animation:hookLead .5s}.enemy.upper .arm.r{animation:upperRear .52s}
-.guard .arm.l{left:87px;top:57px;transform:rotate(-137deg)}.guard .arm.r{left:19px;top:65px;transform:rotate(-64deg)}
+.guard .arm.l{left:83px;top:58px;transform:rotate(-55deg)}.guard .arm.l .forearm{transform:rotate(115deg)}.guard .arm.r{left:25px;top:65px;transform:rotate(-34deg)}.guard .arm.r .forearm{transform:rotate(82deg)}
 .weave{bottom:18%!important;transform:rotate(-6deg)}.enemy.weave{transform:scaleX(-1) rotate(6deg)}.duck{bottom:7%!important;transform:scaleY(.76)}.enemy.duck{transform:scaleX(-1) scaleY(.76)}
 .hurt{animation:hit .36s}.critical{filter:brightness(1.35)}@keyframes hit{0%,100%{transform:translateX(0)}25%{transform:translateX(15px) rotate(5deg)}55%{transform:translateX(-6px) rotate(-3deg)}}
 .status{text-align:center;height:20px;color:#b1bac5;font-size:11px}.controls{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}.controls button{min-height:41px;border-radius:10px;border:1px solid #3a4654;font-size:10px;font-weight:900}.atk{background:#612b32}.def{background:#203d5f}.move{background:#28332f}.special{background:#4b3a20}.hint{font-size:9px}
@@ -83,10 +112,10 @@ button{font:inherit;color:inherit;border:0;touch-action:manipulation}
 const app=document.getElementById('app'),$=id=>document.getElementById(id);
 const s={skin:'#b87552',hair:'#241b19',power:60,speed:60,step:60,tough:60,weight:70,php:100,ehp:100,pst:100,est:100,time:180,running:false,guard:false,dodge:0,px:10,ex:67,last:0,combo:0,lastHit:0};
 const A={jab:{d:7,c:7,r:23,cd:280},straight:{d:10,c:9,r:26,cd:390},hook:{d:12,c:12,r:24,cd:470},upper:{d:15,c:15,r:22,cd:560}};
-function home(){app.innerHTML=`<main class="screen home"><div class="top"><b class="brand">BOXING GAME</b><span class="badge">VERSION 2.7</span></div><div><div class="logo">🥊 BOXING</div><div class="subtitle">2.5D Boxing Guard & Punch Prototype</div></div><div class="menu"><button class="btn primary" onclick="fight()">경기 시작</button><button class="btn secondary" onclick="custom()">내 복서 만들기</button></div><div class="small">2.7 · 명확한 복싱 가드 · 팔꿈치 관절 · 왼손 앞손 잽 · 오른손 뒷손 스트레이트<br>어깨 관절 고정 · 수평 직선 펀치 · 기본 가드 복귀</div></main>`}
+function home(){app.innerHTML=`<main class="screen home"><div class="top"><b class="brand">BOXING GAME</b><span class="badge">VERSION 2.8</span></div><div><div class="logo">🥊 BOXING</div><div class="subtitle">2.5D Boxing Guard & Punch Prototype</div></div><div class="menu"><button class="btn primary" onclick="fight()">경기 시작</button><button class="btn secondary" onclick="custom()">내 복서 만들기</button></div><div class="small">2.8 · 자연스러운 복싱 가드 · 팔꿈치 관절 · 왼손 앞손 잽 · 오른손 뒷손 스트레이트<br>어깨 관절 고정 · 수평 직선 펀치 · 기본 가드 복귀</div></main>`}
 function custom(){app.innerHTML=`<main class="screen"><div class="top"><b>MY BOXER</b><button class="btn" style="min-height:36px;padding:0 12px" onclick="home()">뒤로</button></div><div style="height:145px;display:flex;justify-content:center;align-items:flex-end;background:linear-gradient(#16202c,#0d1218);border-radius:15px;overflow:hidden">${fighter('preview')}</div><section style="padding:14px;background:#121923;border:1px solid #394654;border-radius:16px"><div style="font-size:12px;color:#9ca8b6;line-height:1.5;margin-bottom:8px">기본 자세는 복싱 가드입니다: 왼손은 코 앞, 오른손은 턱 아래. 실제 경기에서는 잽=왼손, 스트레이트=오른손으로 작동합니다.</div>${[['power','주먹 파워'],['speed','주먹 속도'],['step','스텝 속도'],['tough','맷집']].map(x=>`<div style="margin:9px 0"><div style="display:flex;justify-content:space-between;font-size:11px"><span>${x[1]}</span><b>${s[x[0]]}</b></div><input style="width:100%;accent-color:#ef4444" type="range" min="0" max="100" value="${s[x[0]]}" oninput="s['${x[0]}']=+this.value;custom()"></div>`).join('')}</section><button class="btn primary" onclick="fight()">이 복서로 경기하기</button></main>`}
 function fighter(id,e=false){return `<div id="${id}" class="boxer ${e?'enemy':''}" style="${id=='preview'?'position:relative;left:auto;bottom:auto;transform:scale(.63)':''}"><div class="bodyGroup"><div class="hair" ${e?'':'style="background:'+s.hair+'"'}></div><div class="faceEye near"></div><div class="faceEye far"></div><div class="faceBrow near"></div><div class="faceBrow far"></div><div class="nose"></div><div class="mouth"></div><div class="ear"></div><div class="head" ${e?'':'style="background:'+s.skin+'"'}></div><div class="neck" ${e?'':'style="background:'+s.skin+'"'}></div><div class="torso"></div><div class="shoulder l"></div><div class="shoulder r"></div><div class="arm l" ${e?'':'style="background:'+s.skin+'"'}><div class="elbow"></div><div class="forearm"><div class="glove"></div></div></div><div class="arm r" ${e?'':'style="background:'+s.skin+'"'}><div class="elbow"></div><div class="forearm"><div class="glove"></div></div></div><div class="shorts"></div><div class="leg l" ${e?'':'style="background:'+s.skin+'"'}></div><div class="leg r" ${e?'':'style="background:'+s.skin+'"'}></div><div class="shoe l"></div><div class="shoe r"></div></div></div>`}
-function fight(){Object.assign(s,{php:100,ehp:100,pst:100,est:100,time:180,running:true,guard:false,dodge:0,px:10,ex:67,last:0,combo:0,lastHit:0});app.innerHTML=`<main class="screen"><div class="hud"><div><div class="name">PLAYER</div><div class="bar"><div id="php" class="fill hpP"></div></div><div class="stamina"><div id="pst"></div></div></div><div><div id="timer" class="timer">3:00</div><div class="round">ROUND 1</div></div><div><div class="name right">CPU</div><div class="bar"><div id="ehp" class="fill hpE"></div></div><div class="stamina"><div id="est"></div></div></div></div><div id="ring" class="ring"><div class="lights"></div><div class="crowd"></div><div class="floor"></div><div class="ropes"></div><div class="corner l"></div><div class="corner r"></div>${fighter('player')}${fighter('enemy',true)}<div id="combo" class="combo"></div><div id="flash" class="flash"></div><div id="result" class="result hidden"><div class="resultBox"><h1 id="rt"></h1><p id="rx"></p><button class="btn primary" onclick="home()">메인으로</button></div></div></div><div id="status" class="status">기본 복싱 가드 · 왼손(앞손)은 코 앞 / 오른손(뒷손)은 턱 밑</div><div class="controls"><button class="atk" onclick="atk('jab')">👊 왼손 JAB</button><button class="atk" onclick="atk('straight')">👊 오른손 STRAIGHT</button><button class="atk" onclick="atk('hook')">🥊 왼손 HOOK</button><button class="atk" onclick="atk('upper')">🥊 오른손 UPPER</button><button class="def" onclick="guard()">🛡️ GUARD</button><button class="def" onclick="dodge('weave')">↙ WEAVE</button><button class="def" onclick="dodge('duck')">↓ DUCK</button><button class="special" onclick="parry()">⚡ PARRY</button><button class="move" onclick="move(-1,0)">← WALK</button><button class="move" onclick="move(1,0)">WALK →</button><button class="move" onclick="move(-1,1)">↞ DASH</button><button class="move" onclick="move(1,1)">DASH ↠</button></div><div class="hint">2.7: 명확한 복싱 가드에서 시작 · 왼손(앞손) JAB / 오른손(뒷손) STRAIGHT · 어깨에서 수평으로 뻗고 가드로 복귀</div><button class="btn" style="min-height:35px" onclick="quit()">경기 나가기</button></main>`;last=performance.now();acc=cpuAcc=regen=0;requestAnimationFrame(loop)}
+function fight(){Object.assign(s,{php:100,ehp:100,pst:100,est:100,time:180,running:true,guard:false,dodge:0,px:10,ex:67,last:0,combo:0,lastHit:0});app.innerHTML=`<main class="screen"><div class="hud"><div><div class="name">PLAYER</div><div class="bar"><div id="php" class="fill hpP"></div></div><div class="stamina"><div id="pst"></div></div></div><div><div id="timer" class="timer">3:00</div><div class="round">ROUND 1</div></div><div><div class="name right">CPU</div><div class="bar"><div id="ehp" class="fill hpE"></div></div><div class="stamina"><div id="est"></div></div></div></div><div id="ring" class="ring"><div class="lights"></div><div class="crowd"></div><div class="floor"></div><div class="ropes"></div><div class="corner l"></div><div class="corner r"></div>${fighter('player')}${fighter('enemy',true)}<div id="combo" class="combo"></div><div id="flash" class="flash"></div><div id="result" class="result hidden"><div class="resultBox"><h1 id="rt"></h1><p id="rx"></p><button class="btn primary" onclick="home()">메인으로</button></div></div></div><div id="status" class="status">복싱 스탠스 · 왼발 앞 / 오른발 뒤 · 왼손은 얼굴 앞 / 오른손은 턱 옆</div><div class="controls"><button class="atk" onclick="atk('jab')">👊 왼손 JAB</button><button class="atk" onclick="atk('straight')">👊 오른손 STRAIGHT</button><button class="atk" onclick="atk('hook')">🥊 왼손 HOOK</button><button class="atk" onclick="atk('upper')">🥊 오른손 UPPER</button><button class="def" onclick="guard()">🛡️ GUARD</button><button class="def" onclick="dodge('weave')">↙ WEAVE</button><button class="def" onclick="dodge('duck')">↓ DUCK</button><button class="special" onclick="parry()">⚡ PARRY</button><button class="move" onclick="move(-1,0)">← WALK</button><button class="move" onclick="move(1,0)">WALK →</button><button class="move" onclick="move(-1,1)">↞ DASH</button><button class="move" onclick="move(1,1)">DASH ↠</button></div><div class="hint">2.8: 자연스러운 복싱 가드에서 시작 · 왼손(앞손) JAB / 오른손(뒷손) STRAIGHT · 어깨에서 수평으로 뻗고 가드로 복귀</div><button class="btn" style="min-height:35px" onclick="quit()">경기 나가기</button></main>`;last=performance.now();acc=cpuAcc=regen=0;requestAnimationFrame(loop)}
 function status(t){let x=$('status');if(x)x.textContent=t}function dist(){return Math.abs(s.ex-s.px)}function upd(){if(!$('php'))return;$('php').style.width=s.php+'%';$('ehp').style.width=s.ehp+'%';$('pst').style.width=s.pst+'%';$('est').style.width=s.est+'%';$('timer').textContent=Math.floor(s.time/60)+':'+String(Math.max(0,s.time)%60).padStart(2,'0');$('player').style.left=s.px+'%';$('enemy').style.left=s.ex+'%'}
 function anim(id,t){let p=$(id);p.classList.remove('attack','jab','straight','hook','upper');void p.offsetWidth;p.classList.add('attack',t);setTimeout(()=>p.classList.remove('attack',t),600)}
 function dmg(target,n,crit=false){let e=document.createElement('div');e.className='damage';e.textContent=(crit?'CRIT ':'')+'-'+n;e.style.left=(target=='e'?s.ex:s.px)+'%';e.style.top='42%';$('ring').appendChild(e);setTimeout(()=>e.remove(),730)}
