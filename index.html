@@ -209,73 +209,104 @@ function glove(p,color){ctx.fillStyle=color;ctx.beginPath();ctx.arc(p.x,p.y,17,0
 function add(a,b){return{x:a.x+b.x,y:a.y+b.y}}
 function rot(v,a){return{x:v.x*Math.cos(a)-v.y*Math.sin(a),y:v.x*Math.sin(a)+v.y*Math.cos(a)}}
 function IKArm(shoulder,hand,elbowSide){
- // two-bone IK: returns a natural elbow between shoulder and hand.
- const dx=hand.x-shoulder.x,dy=hand.y-shoulder.y,d=Math.hypot(dx,dy);
- const L1=62,L2=58,D=clamp(d,30,L1+L2-1);
+ const dx=hand.x-shoulder.x,dy=hand.y-shoulder.y;
+ const d=Math.max(1,Math.hypot(dx,dy));
+ const L1=52,L2=51;
+ const D=Math.max(25,Math.min(d,L1+L2-2));
  const base=Math.atan2(dy,dx);
- const cos=(L1*L1+D*D-L2*L2)/(2*L1*D);
- const a=Math.acos(clamp(cos,-1,1))*elbowSide;
- return add(shoulder,rot({x:L1,y:0},base+a));
-}
-function poseArm(f,lead,baseY){
- const front=f.enemy?-1:1; // player faces right; CPU mirrors
- const shoulder={x:f.x+front*(lead?46:-46),y:baseY};
- let hand,side;
- const act=f.action;
- if((act==="jab"&&lead)||(act==="cross"&&!lead)){
-  hand={x:f.x+front*(lead?116:122),y:baseY-2};
-  side=lead?-1:1;
- }else if(act==="hook"){
-  hand={x:f.x+front*(lead?62:55),y:baseY-34};side=lead?-1:1;
- }else if(act==="upper"){
-  hand={x:f.x+front*(lead?56:49),y:baseY+31};side=lead?1:-1;
- }else{
-  // Compact orthodox guard: elbows low/inward, hands high.
-  hand={x:f.x+front*(lead?43:34),y:baseY-(lead?61:51)};
-  side=lead?-1:1;
- }
- const elbow=IKArm(shoulder,hand,side);
- return {shoulder,elbow,hand};
+ const c=Math.max(-1,Math.min(1,(L1*L1+D*D-L2*L2)/(2*L1*D)));
+ const off=Math.acos(c)*(elbowSide<0?-1:1);
+ return {
+   x:shoulder.x+Math.cos(base+off)*L1,
+   y:shoulder.y+Math.sin(base+off)*L1
+ };
 }
 function drawFighter(f){
  ctx.save();
- if(f.hit>0)ctx.globalAlpha=.68;
- const x=f.x,ground=H*.87, bob=f.walk>0?Math.sin((.22-f.walk)*35)*3:0;
- const front=f.enemy?-1:1;
+ const scale=Math.max(.58,Math.min(1.0,H/560));
+ const x=f.x, ground=H*.86, front=f.enemy?-1:1;
+ const bob=f.walk>0?Math.sin((.22-f.walk)*35)*3:0;
+ if(f.hit>0)ctx.globalAlpha=.7;
+
  // shadow
- ctx.globalAlpha*=.25;ctx.fillStyle="#000";ctx.beginPath();ctx.ellipse(x,ground-8,72,13,0,0,Math.PI*2);ctx.fill();ctx.globalAlpha=f.hit>0?.68:1;
- // stance: rear foot left for player, mirrored for CPU
- const hip={x:x,y:ground-185+bob},frontHip={x:x+front*17,y:ground-181+bob},rearHip={x:x-front*17,y:ground-181+bob};
- seg(frontHip,{x:frontHip.x+front*17,y:ground-62},25,C.skin);
- seg(rearHip,{x:rearHip.x-front*15,y:ground-60},25,C.skin);
- // shoes
- ctx.fillStyle="#111820";ctx.beginPath();ctx.ellipse(frontHip.x+front*20,ground-50,28,11,0,0,Math.PI*2);ctx.fill();
- ctx.beginPath();ctx.ellipse(rearHip.x-front*18,ground-49,28,11,0,0,Math.PI*2);ctx.fill();
- // pelvis
- ctx.fillStyle="#121a24";ctx.beginPath();ctx.roundRect(x-47,ground-215,94,55,10);ctx.fill();
- // torso with slight lean
- ctx.fillStyle=f.enemy?C.red:C.blue;ctx.beginPath();ctx.roundRect(x-50,ground-330,100,128,30);ctx.fill();
- // shoulders
- const shoulderY=ground-302+bob;
+ ctx.globalAlpha*=.28;ctx.fillStyle="#000";
+ ctx.beginPath();ctx.ellipse(x,ground-5,55*scale,9*scale,0,0,Math.PI*2);ctx.fill();
+ ctx.globalAlpha=f.hit>0?.7:1;
+
+ const hipY=ground-125*scale, torsoTop=ground-230*scale, headY=ground-285*scale;
+ const shoulderY=ground-205*scale;
+
+ // legs: staggered boxing stance
+ const frontK={x:x+front*18*scale,y:ground-58*scale};
+ const rearK={x:x-front*18*scale,y:ground-58*scale};
+ seg({x:x+front*15*scale,y:hipY},{x:frontK.x,y:frontK.y},20*scale,C.skin);
+ seg({x:x-front*15*scale,y:hipY},{x:rearK.x,y:rearK.y},20*scale,C.skin);
+
+ ctx.fillStyle="#121923";
+ ctx.beginPath();ctx.ellipse(frontK.x+front*18*scale,ground-47*scale,27*scale,10*scale,0,0,Math.PI*2);ctx.fill();
+ ctx.beginPath();ctx.ellipse(rearK.x-front*16*scale,ground-47*scale,27*scale,10*scale,0,0,Math.PI*2);ctx.fill();
+
+ // shorts
+ ctx.fillStyle="#141c27";roundRect(x-40*scale,hipY-38*scale,80*scale,45*scale,9*scale);ctx.fill();
+
+ // torso
+ ctx.fillStyle=f.enemy?C.red:C.blue;
+ roundRect(x-43*scale,torsoTop,86*scale,108*scale,25*scale);ctx.fill();
+
  // neck
- ctx.fillStyle=C.skin;ctx.fillRect(x-14,ground-350,28,28);
+ ctx.fillStyle=C.skin;
+ roundRect(x-12*scale,headY+28*scale,24*scale,25*scale,7*scale);ctx.fill();
+
  // head
- ctx.beginPath();ctx.arc(x,ground-390,43,0,Math.PI*2);ctx.fill();
+ ctx.beginPath();ctx.arc(x,headY,34*scale,0,Math.PI*2);ctx.fill();
+
  // hair
- ctx.fillStyle="#181515";ctx.beginPath();ctx.arc(x,ground-402,44,Math.PI,Math.PI*2);ctx.fill();ctx.fillRect(x-42,ground-402,84,16);
- // face facing direction
- ctx.fillStyle="#1b2028";ctx.beginPath();ctx.arc(x+front*17,ground-392,4,0,Math.PI*2);ctx.fill();
- ctx.beginPath();ctx.arc(x+front*31,ground-390,3,0,Math.PI*2);ctx.fill();
- ctx.strokeStyle="#694131";ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(x+front*27,ground-373);ctx.lineTo(x+front*38,ground-374);ctx.stroke();
- // arms: lead and rear are drawn separately, with joints
- const lead=poseArm(f,true,shoulderY),rear=poseArm(f,false,shoulderY+3);
- // rear first for depth
- [rear,lead].forEach((a,i)=>{
-   seg(a.shoulder,a.elbow,24,C.skin);joint(a.elbow,12);seg(a.elbow,a.hand,23,C.skin);
-   glove(a.hand,i===0?(f.enemy?"#b9c3cf":"#dce3eb"):(f.enemy?"#c92f3b":"#ef4650"));
+ ctx.fillStyle="#181515";
+ ctx.beginPath();ctx.arc(x,headY-8*scale,35*scale,Math.PI,Math.PI*2);ctx.fill();
+ ctx.fillRect(x-34*scale,headY-8*scale,68*scale,12*scale);
+
+ // face
+ ctx.fillStyle="#1b2028";
+ ctx.beginPath();ctx.arc(x+front*14*scale,headY-2*scale,3.2*scale,0,Math.PI*2);ctx.fill();
+ ctx.beginPath();ctx.arc(x+front*25*scale,headY+1*scale,2.5*scale,0,Math.PI*2);ctx.fill();
+ ctx.strokeStyle="#694131";ctx.lineWidth=1.5*scale;
+ ctx.beginPath();ctx.moveTo(x+front*21*scale,headY+15*scale);ctx.lineTo(x+front*30*scale,headY+14*scale);ctx.stroke();
+
+ // shoulders
+ const lead=poseArmScaled(f,true,shoulderY,scale);
+ const rear=poseArmScaled(f,false,shoulderY+3*scale,scale);
+
+ // rear arm first, lead arm second
+ [rear,lead].forEach((arm,i)=>{
+   seg(arm.shoulder,arm.elbow,21*scale,C.skin);
+   joint(arm.elbow,10*scale);
+   seg(arm.elbow,arm.hand,20*scale,C.skin);
+   glove(arm.hand,i===0?(f.enemy?"#d8dee5":"#edf2f7"):(f.enemy?"#c92f3b":"#ef4650"),scale);
  });
- // glove seam
  ctx.restore();
+}
+
+function poseArmScaled(f,lead,sy,scale){
+ const front=f.enemy?-1:1;
+ const shoulder={x:f.x+front*(lead?40:-40)*scale,y:sy};
+ let hx,hy,side;
+ if((f.action==="jab"&&lead)||(f.action==="cross"&&!lead)){
+   hx=f.x+front*(lead?108:116)*scale;hy=sy-2*scale;side=lead?-1:1;
+ }else if(f.action==="hook"){
+   hx=f.x+front*(lead?60:53)*scale;hy=sy-29*scale;side=lead?-1:1;
+ }else if(f.action==="upper"){
+   hx=f.x+front*(lead?52:47)*scale;hy=sy+25*scale;side=lead?1:-1;
+ }else{
+   hx=f.x+front*(lead?38:31)*scale;hy=sy-(lead?52:44)*scale;side=lead?-1:1;
+ }
+ const hand={x:hx,y:hy};
+ const elbow=IKArm(shoulder,hand,side);
+ return {shoulder,elbow,hand};
+}
+
+function glove(p,color,scale){
+ ctx.fillStyle=color;ctx.beginPath();ctx.arc(p.x,p.y,16*scale,0,Math.PI*2);ctx.fill();
+ ctx.strokeStyle="#ffffff88";ctx.lineWidth=1.5*scale;ctx.stroke();
 }
 function draw(){
  ctx.clearRect(0,0,W,H);
