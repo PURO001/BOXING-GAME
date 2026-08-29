@@ -1,300 +1,294 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="utf-8">
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
-<title>BOXING GAME 3.0</title>
+<title>BOXING GAME 4.0</title>
 <style>
+:root{--bg:#070b12;--panel:#101925;--line:#314157;--red:#ef4444;--blue:#2f80ed;--text:#f4f7fb;--muted:#91a0b3}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;background:#070b12;color:#f4f7fb;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;height:100%;overflow:hidden}
-button{font:inherit;color:inherit;border:0}
-#app{height:100%;max-width:900px;margin:auto;position:relative}
-.screen{height:100%;padding:18px 18px 22px;display:flex;flex-direction:column}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",sans-serif}
+button{font:inherit}
+#app{width:100%;height:100%;max-width:980px;margin:auto}
+.screen{height:100%;padding:16px;display:flex;flex-direction:column}
 .hidden{display:none!important}
-.home{justify-content:center;gap:18px;background:radial-gradient(circle at 50% 25%,#182538 0,#0b1018 46%,#05080d 100%)}
-.brand{font-weight:900;letter-spacing:4px;font-size:clamp(32px,8vw,64px);text-align:center}
-.sub{text-align:center;color:#aab6c7;font-size:17px}
-.badge{align-self:flex-end;border:2px solid #3a4a5e;border-radius:999px;padding:7px 15px;color:#aeb9c8}
-.logo{text-align:center;font-weight:900;font-size:clamp(48px,13vw,96px);letter-spacing:3px}
-.logo span{font-size:.55em}
-.big{height:72px;border-radius:18px;font-size:24px;font-weight:800;background:#ff4d55;box-shadow:0 7px 0 #b52d35}
-.secondary{height:66px;border-radius:18px;font-size:21px;font-weight:750;background:#172538;border:2px solid #33445a}
-.note{text-align:center;color:#8795a8;line-height:1.7}
-#fight{padding:10px 12px 14px;gap:8px}
-.hud{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px}
-.name{font-size:14px;color:#9eacbe}
-.hp{height:18px;background:#202c3b;border-radius:99px;border:2px solid #3a4b60;overflow:hidden;margin-top:5px}
-.hp i{display:block;height:100%;background:#38d18c;width:100%;transition:width .15s}
-.stam i{background:#f5c64a}
-.timer{text-align:center;font-size:42px;font-weight:900;line-height:.9}
-.round{text-align:center;color:#99a7b9;letter-spacing:3px;font-size:13px;margin-top:8px}
-#arena{flex:1;min-height:300px;border:2px solid #334358;border-radius:24px;overflow:hidden;background:linear-gradient(#253244,#1a2432 52%,#0d141e);position:relative}
-canvas{display:block;width:100%;height:100%}
-.msg{text-align:center;color:#b8c4d3;font-size:17px;min-height:25px}
+.home{justify-content:center;gap:18px;background:radial-gradient(circle at 50% 20%,#1b2b40,#080d14 55%,#04070b)}
+.badge{align-self:center;padding:7px 13px;border:1px solid #40516a;border-radius:99px;color:#aab8ca;font-size:12px;letter-spacing:2px}
+.logo{text-align:center;font-size:clamp(38px,10vw,76px);font-weight:950;letter-spacing:4px}
+.sub{text-align:center;color:var(--muted);font-size:16px}
+.big,.secondary{width:100%;height:66px;border-radius:17px;font-size:21px;font-weight:900}
+.big{background:var(--red);box-shadow:0 6px 0 #a92830}
+.secondary{background:#172437;border:1px solid #3a4d65}
+.note{text-align:center;color:#7f8da0;line-height:1.7;font-size:13px}
+.hud{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center}
+.name{font-size:13px;color:#aeb9c8;font-weight:800}
+.hp{height:16px;margin-top:5px;border-radius:99px;background:#202c3a;border:1px solid #43536a;overflow:hidden}
+.hp i{display:block;height:100%;width:100%;background:#32d583;transition:width .15s}
+.enemyhp i{background:#ef4444}
+.stamina i{background:#f2c94c}
+.timer{text-align:center;font-size:38px;font-weight:950;line-height:.9}
+.round{text-align:center;color:#8997aa;font-size:11px;letter-spacing:3px;margin-top:7px}
+#arena{position:relative;flex:1;min-height:290px;margin:8px 0;border:2px solid #34465d;border-radius:22px;overflow:hidden;background:#1b2736}
+canvas{width:100%;height:100%;display:block}
+.msg{text-align:center;min-height:23px;color:#c0cbd8;font-size:15px;font-weight:700}
 .controls{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
-.controls button{height:57px;border-radius:14px;background:#692d35;border:2px solid #3c526c;font-weight:800;font-size:15px}
-.controls button.def{background:#1d426b}
-.controls button.move{background:#25352f}
-.controls button.parry{background:#604b1f}
-.controls button:active{transform:scale(.96)}
-.exit{height:50px;border-radius:15px;background:#1b2939;border:2px solid #34475d;font-weight:750}
-.tip{text-align:center;color:#7e8b9b;font-size:13px}
-#creator{justify-content:center;gap:14px}
-.card{background:#111b28;border:1px solid #304055;border-radius:20px;padding:20px}
-label{display:block;color:#aeb9c8;margin:10px 0 6px}
-input{width:100%;padding:14px;border-radius:12px;border:1px solid #43536a;background:#0b1119;color:#fff;font-size:17px}
+.controls button{min-height:52px;border-radius:13px;border:1px solid #3a506b;background:#642d35;color:#fff;font-size:13px;font-weight:900}
+.controls .def{background:#1b4169}.controls .move{background:#26352f}.controls .parry{background:#5b471f}
+.exit{margin-top:8px;height:43px;border-radius:13px;background:#172436;border:1px solid #354a63;color:#b7c3d1;font-weight:800}
+.tip{text-align:center;color:#738196;font-size:11px;margin:5px 0}
+.card{background:#111b28;border:1px solid #33465e;border-radius:18px;padding:18px}
+label{display:block;color:#aeb9c8;margin:10px 0 6px}input{width:100%;padding:13px;border-radius:11px;border:1px solid #43546a;background:#080e16;color:#fff;font-size:17px}
+@media(max-width:600px){.screen{padding:10px 9px 12px}.timer{font-size:31px}.controls{gap:5px}.controls button{min-height:53px;font-size:11px}.tip{font-size:10px}.msg{font-size:13px}}
 </style>
 </head>
 <body>
 <div id="app">
 <section id="home" class="screen home">
-  <div class="badge">PROTOTYPE 3.0</div>
-  <div class="brand">BOXING GAME</div>
-  <div class="logo">🥊 <span>BOXING</span></div>
-  <div class="sub">Mobile Boxing Prototype</div>
-  <button class="big" id="start">경기 시작</button>
-  <button class="secondary" id="make">내 복서 만들기</button>
-  <div class="note">아이폰 터치 조작 · 오프라인 싱글 플레이<br>관절형 캐릭터 · 가드 · 펀치 · 회피 · 스텝 · CPU AI</div>
+ <div class="badge">BOXING GAME · 4.0</div>
+ <div class="logo">🥊 BOXING</div>
+ <div class="sub">JOINT-BASED 2D BOXING PROTOTYPE</div>
+ <button class="big" id="start">경기 시작</button>
+ <button class="secondary" id="create">내 복서 설정</button>
+ <div class="note">관절 기반 캐릭터 · 오소독스 가드 · JAB / STRAIGHT / HOOK / UPPER<br>GUARD / PARRY / SLIP / DUCK · WALK / DASH · CPU</div>
 </section>
 
 <section id="creator" class="screen hidden">
-  <div class="brand" style="font-size:34px">MY BOXER</div>
-  <div class="card">
-    <label>복서 이름</label><input id="pname" value="PLAYER">
-    <label>스타일</label>
-    <button class="secondary" style="width:100%;height:56px" id="styleBtn">ORTHODOX · 왼손 잽 / 오른손 스트레이트</button>
-  </div>
-  <button class="big" id="save">저장하고 경기</button>
-  <button class="secondary" id="back">뒤로</button>
+ <h2 style="text-align:center">MY BOXER</h2>
+ <div class="card">
+  <label>복서 이름</label><input id="pname" value="PLAYER">
+  <label>스타일</label><div style="color:#c4ceda;line-height:1.6">ORTHODOX<br><small style="color:#7f8da0">왼손 = 리드 / JAB · 오른손 = 리어 / STRAIGHT</small></div>
+ </div>
+ <button class="big" id="save">저장하고 경기</button>
+ <button class="secondary" id="back">뒤로</button>
 </section>
 
 <section id="fight" class="screen hidden">
-  <div class="hud">
-    <div><div class="name" id="pn">PLAYER</div><div class="hp"><i id="php"></i></div><div class="hp stam"><i id="pstam"></i></div></div>
-    <div><div class="timer" id="time">3:00</div><div class="round">ROUND 1</div></div>
-    <div style="text-align:right"><div class="name">CPU</div><div class="hp"><i id="chp"></i></div><div class="hp stam"><i id="cstam"></i></div></div>
-  </div>
-  <div id="arena"><canvas id="cv"></canvas></div>
-  <div class="msg" id="msg">가드 자세입니다. 거리를 보고 잽을 사용하세요.</div>
-  <div class="controls">
-    <button data-act="jab">👊 JAB</button>
-    <button data-act="cross">👊 STRAIGHT</button>
-    <button data-act="hook">🥊 HOOK</button>
-    <button data-act="upper">🥊 UPPER</button>
-    <button class="def" data-act="guard">🛡 GUARD</button>
-    <button class="def" data-act="slip">↙ WEAVE</button>
-    <button class="def" data-act="duck">↓ DUCK</button>
-    <button class="parry" data-act="parry">⚡ PARRY</button>
-    <button class="move" data-act="left">← WALK</button>
-    <button class="move" data-act="right">WALK →</button>
-    <button class="move" data-act="back">≪ DASH</button>
-    <button class="move" data-act="forward">DASH ≫</button>
-  </div>
-  <div class="tip">공격은 거리 안에서 적중 · 스태미나가 낮으면 공격력이 감소합니다</div>
-  <button class="exit" id="exit">경기 나가기</button>
+ <div class="hud">
+  <div><div class="name" id="pnameHud">PLAYER</div><div class="hp"><i id="php"></i></div><div class="hp stamina"><i id="pst"></i></div></div>
+  <div><div class="timer" id="clock">3:00</div><div class="round">ROUND 1</div></div>
+  <div><div class="name" style="text-align:right">CPU</div><div class="hp enemyhp"><i id="ehp"></i></div><div class="hp stamina"><i id="est"></i></div></div>
+ </div>
+ <div id="arena"><canvas id="canvas"></canvas></div>
+ <div class="msg" id="msg">가드 유지 — 앞손은 얼굴 앞, 뒷손은 턱 옆</div>
+ <div class="controls">
+  <button data-a="jab">👊 JAB<br>왼손</button>
+  <button data-a="cross">👊 STRAIGHT<br>오른손</button>
+  <button data-a="hook">🥊 HOOK</button>
+  <button data-a="upper">🥊 UPPER</button>
+  <button class="def" data-a="guard">🛡 GUARD</button>
+  <button class="def" data-a="slip">↙ SLIP</button>
+  <button class="def" data-a="duck">↓ DUCK</button>
+  <button class="parry" data-a="parry">⚡ PARRY</button>
+  <button class="move" data-a="left">← STEP</button>
+  <button class="move" data-a="right">STEP →</button>
+  <button class="move" data-a="back">≪ DASH</button>
+  <button class="move" data-a="forward">DASH ≫</button>
+ </div>
+ <div class="tip">거리 90~170px가 기본 공격 거리 · 펀치 중 가드가 내려갑니다</div>
+ <button class="exit" id="exit">경기 나가기</button>
 </section>
 </div>
 
 <script>
 const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
-const home=$("#home"), creator=$("#creator"), fight=$("#fight");
-$("#start").onclick=()=>startGame();
-$("#make").onclick=()=>{home.classList.add("hidden");creator.classList.remove("hidden")};
+const home=$("#home"),creator=$("#creator"),fight=$("#fight");
+$("#start").onclick=()=>start();
+$("#create").onclick=()=>{home.classList.add("hidden");creator.classList.remove("hidden")};
 $("#back").onclick=()=>{creator.classList.add("hidden");home.classList.remove("hidden")};
-$("#save").onclick=()=>{localStorage.boxerName=$("#pname").value||"PLAYER";startGame()};
-$("#exit").onclick=()=>{stopGame();fight.classList.add("hidden");home.classList.remove("hidden")};
-$("#styleBtn").onclick=()=>{};
+$("#save").onclick=()=>{localStorage.boxerName=$("#pname").value.trim()||"PLAYER";start()};
+$("#exit").onclick=()=>{game=null;fight.classList.add("hidden");home.classList.remove("hidden")};
 
-const cv=$("#cv"),ctx=cv.getContext("2d");
-let W,H,dpr,raf,last=0,game=null;
+const canvas=$("#canvas"),ctx=canvas.getContext("2d");
+let dpr=1,W=0,H=0,game=null,last=0,raf=0;
 
 function resize(){
- dpr=Math.min(devicePixelRatio||1,2); W=cv.clientWidth; H=cv.clientHeight;
- cv.width=W*dpr;cv.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);
+ dpr=Math.min(devicePixelRatio||1,2);W=canvas.clientWidth;H=canvas.clientHeight;
+ canvas.width=Math.max(1,W*dpr);canvas.height=Math.max(1,H*dpr);
+ ctx.setTransform(dpr,0,0,dpr,0,0);
 }
 addEventListener("resize",resize);
 
-const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
-function lerp(a,b,t){return a+(b-a)*t}
-function pt(x,y,len,ang){return{x:x+Math.cos(ang)*len,y:y+Math.sin(ang)*len}}
-
-function makeFighter(x,flip,name){
- return {x,baseX:x,flip,name,hp:100,stam:100,state:"guard",action:null,t:0,
-  headTilt:0,bodyLean:0,hitFlash:0,guard:1,walk:0,vy:0};
+const C={skin:"#bd7954",skin2:"#d08a61",dark:"#171c23",blue:"#2f80ed",red:"#e8444f",glove:"#f2f5f8"};
+function fighter(x,enemy=false){
+ return {x,enemy,hp:100,st:100,action:"guard",t:0,hit:0,walk:0,body:0,guard:true};
 }
-function startGame(){
+function start(){
  home.classList.add("hidden");creator.classList.add("hidden");fight.classList.remove("hidden");
- $("#pn").textContent=localStorage.boxerName||"PLAYER"; resize();
- game={running:true,time:180,player:makeFighter(W*.31,false,"PLAYER"),cpu:makeFighter(W*.69,true,"CPU"),lastCpu:0};
- last=performance.now(); requestAnimationFrame(loop);
+ $("#pnameHud").textContent=localStorage.boxerName||"PLAYER";resize();
+ game={time:180,player:fighter(W*.31),cpu:fighter(W*.69,true),running:true,cpuWait:.7};
+ last=performance.now();raf=requestAnimationFrame(loop);
 }
-function stopGame(){if(game)game.running=false;game=null}
-
-function setAction(f,a,dur=.34){
- if(f.action && f.t<.08)return;
- f.action=a;f.t=dur;f.state=a;f.guard=0;
+function begin(f,a,d=.36){
+ if(f.t>.06)return false;
+ f.action=a;f.t=d;f.guard=false;return true;
 }
-function act(a){
- if(!game)return; let p=game.player,c=game.cpu;
- if(a==="guard"){p.action=null;p.state="guard";p.guard=1;return}
- if(a==="slip"){setAction(p,"slip",.30);return}
- if(a==="duck"){setAction(p,"duck",.34);return}
- if(a==="parry"){setAction(p,"parry",.26);return}
- if(["jab","cross","hook","upper"].includes(a)){
-   if(p.stam<9)return;
-   p.stam-=a==="jab"?8:12;setAction(p,a,a==="hook"?0.48:.38);
-   setTimeout(()=>hitCheck(a),100);
-   return;
+function playerAction(a){
+ if(!game||!game.running)return;
+ const p=game.player;
+ if(a==="guard"){p.action="guard";p.t=0;p.guard=true;return}
+ if(["left","right","back","forward"].includes(a)){
+  const n={left:-20,right:20,back:-48,forward:48}[a];
+  p.x=clamp(p.x+n,85,W-85);p.walk=.22;$("#msg").textContent=a==="back"||a==="forward"?"DASH — 거리 조절":"STEP — 거리 조절";return;
  }
- let step=a==="left"?-18:a==="right"?18:a==="back"?-42:42;
- p.x=clamp(p.x+step,100,W-100);p.walk=.25;
+ if(p.st<8&&!["guard"].includes(a))return;
+ const costs={jab:8,cross:12,hook:11,upper:12,slip:6,duck:5,parry:6};
+ p.st-=costs[a]||0;
+ if(begin(p,a,a==="hook"?.48:a==="parry"?.27:.38)){
+  setTimeout(()=>resolvePlayer(a),105);
+ }
 }
-function hitCheck(a){
+function resolvePlayer(a){
  if(!game||!game.running)return;
  const p=game.player,c=game.cpu,dist=Math.abs(p.x-c.x);
- const reach={jab:170,cross:185,hook:125,upper:105}[a];
- if(dist>reach)return;
+ const reach={jab:165,cross:178,hook:122,upper:112}[a];
+ if(!reach)return;
+ if(dist>reach){$("#msg").textContent=a.toUpperCase()+" — 거리 부족";return}
  let dmg={jab:8,cross:14,hook:12,upper:13}[a];
- if(c.guard) dmg*=.35;
- if(c.state==="slip"||c.state==="duck") dmg*=.15;
- if(c.state==="parry"){p.hp-=5;$("#msg").textContent="PARRY! CPU가 공격을 흘렸습니다.";return}
- c.hp=clamp(c.hp-dmg,0,100);c.hitFlash=.18;
- $("#msg").textContent=a.toUpperCase()+" 적중! -"+Math.round(dmg);
- if(c.hp<=0)finish("PLAYER 승리!");
+ if(c.guard)dmg*=.32;
+ if(c.action==="slip"||c.action==="duck")dmg*=.12;
+ if(c.action==="parry"){p.hp=clamp(p.hp-5,0,100);$("#msg").textContent="PARRY! CPU가 반격했습니다.";return}
+ c.hp=clamp(c.hp-dmg,0,100);c.hit=.18;
+ $("#msg").textContent=a.toUpperCase()+" 적중  -"+Math.round(dmg);
+ if(c.hp<=0)finish("PLAYER KO!");
 }
 function cpuAI(dt){
- let c=game.cpu,p=game.player;
- c.stam=clamp(c.stam+dt*12,0,100);
+ const c=game.cpu,p=game.player;
+ c.st=clamp(c.st+dt*14,0,100);
  const dist=Math.abs(c.x-p.x);
- if(c.action){c.t-=dt;if(c.t<=0){c.action=null;c.state="guard";c.guard=1}return}
- if(dist>185){c.x+=c.x<p.x?25*dt:-25*dt;c.state="guard";c.guard=1;return}
- if(Math.random()<dt*.9){
-   if(p.action && Math.random()<.45){setAction(c,["slip","duck","guard"][Math.floor(Math.random()*3)],.28);return}
-   const a=Math.random()<.52?"jab":Math.random()<.5?"cross":"hook";
-   if(c.stam>10){c.stam-=a==="jab"?8:12;setAction(c,a,.38);setTimeout(()=>cpuHit(a),100)}
- }
+ if(c.t>0)return;
+ if(dist>180){c.x+=(c.x<p.x?1:-1)*28*dt;c.action="guard";c.guard=true;return}
+ game.cpuWait-=dt;if(game.cpuWait>0)return;
+ game.cpuWait=.45+Math.random()*.9;
+ const r=Math.random();
+ if(p.action!=="guard"&&r<.30){begin(c,Math.random()<.5?"slip":"guard",.28);return}
+ const a=r<.55?"jab":r<.82?"cross":"hook";
+ if(c.st>9){c.st-=a==="jab"?8:12;begin(c,a,.38);setTimeout(()=>resolveCPU(a),110)}
 }
-function cpuHit(a){
+function resolveCPU(a){
  if(!game||!game.running)return;
- const c=game.cpu,p=game.player,dist=Math.abs(c.x-p.x);
- if(dist>{jab:170,cross:185,hook:125,upper:105}[a])return;
- let dmg={jab:7,cross:12,hook:10,upper:11}[a];
- if(p.guard)dmg*=.35;
- if(["slip","duck"].includes(p.state))dmg*=.15;
- if(p.state==="parry"){c.hp-=4;return}
- p.hp=clamp(p.hp-dmg,0,100);p.hitFlash=.18;
- $("#msg").textContent="CPU "+a.toUpperCase()+" 적중! -"+Math.round(dmg);
- if(p.hp<=0)finish("CPU 승리!");
+ const c=game.cpu,p=game.player,dist=Math.abs(p.x-c.x);
+ if(dist>{jab:165,cross:178,hook:122}[a])return;
+ let dmg={jab:7,cross:12,hook:10}[a];
+ if(p.guard)dmg*=.32;if(p.action==="slip"||p.action==="duck")dmg*=.12;
+ if(p.action==="parry"){c.hp=clamp(c.hp-4,0,100);return}
+ p.hp=clamp(p.hp-dmg,0,100);p.hit=.18;
+ $("#msg").textContent="CPU "+a.toUpperCase()+" 적중  -"+Math.round(dmg);
+ if(p.hp<=0)finish("CPU KO!");
 }
-function finish(text){game.running=false;$("#msg").textContent=text+"  경기 종료";setTimeout(()=>{},0)}
+function finish(text){if(!game)return;game.running=false;$("#msg").textContent=text+"  ·  경기 종료"}
 
-$$("[data-act]").forEach(b=>b.addEventListener("pointerdown",e=>{e.preventDefault();act(b.dataset.act)}));
+$$("[data-a]").forEach(b=>b.addEventListener("pointerdown",e=>{e.preventDefault();playerAction(b.dataset.a)}));
 
 function loop(now){
  if(!game||!game.running)return;
- const dt=Math.min(.033,(now-last)/1000);last=now;
+ const dt=Math.min(.032,(now-last)/1000);last=now;
  game.time=Math.max(0,game.time-dt);
  if(game.time<=0){finish(game.player.hp>=game.cpu.hp?"PLAYER 판정승!":"CPU 판정승!")}
- game.player.stam=clamp(game.player.stam+dt*15,0,100);
- cpuAI(dt);updateF(game.player,dt);updateF(game.cpu,dt);draw();
- updateHud();
+ game.player.st=clamp(game.player.st+dt*16,0,100);
+ game.cpuAI=cpuAI(dt);
+ tick(game.player,dt);tick(game.cpu,dt);
+ draw();hud();
  raf=requestAnimationFrame(loop);
 }
-function updateF(f,dt){
- if(f.hitFlash>0)f.hitFlash-=dt;
- if(f.action){f.t-=dt;if(f.t<=0){f.action=null;f.state="guard";f.guard=1}}
- f.walk=Math.max(0,f.walk-dt);
+function tick(f,dt){
+ if(f.hit>0)f.hit-=dt;
+ if(f.walk>0)f.walk-=dt;
+ if(f.t>0){f.t-=dt;if(f.t<=0){f.t=0;f.action="guard";f.guard=true}}
 }
-function updateHud(){
- $("#php").style.width=game.player.hp+"%";$("#chp").style.width=game.cpu.hp+"%";
- $("#pstam").style.width=game.player.stam+"%";$("#cstam").style.width=game.cpu.stam+"%";
- let s=Math.ceil(game.time),m=Math.floor(s/60),sec=String(s%60).padStart(2,"0");$("#time").textContent=m+":"+sec;
+function hud(){
+ $("#php").style.width=game.player.hp+"%";$("#ehp").style.width=game.cpu.hp+"%";
+ $("#pst").style.width=game.player.st+"%";$("#est").style.width=game.cpu.st+"%";
+ const s=Math.ceil(game.time),m=Math.floor(s/60),sec=String(s%60).padStart(2,"0");$("#clock").textContent=m+":"+sec;
+}
+
+function seg(a,b,width,color){
+ ctx.strokeStyle=color;ctx.lineWidth=width;ctx.lineCap="round";ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();
+}
+function joint(p,r=10){ctx.fillStyle=C.skin2;ctx.beginPath();ctx.arc(p.x,p.y,r,0,Math.PI*2);ctx.fill()}
+function glove(p,color){ctx.fillStyle=color;ctx.beginPath();ctx.arc(p.x,p.y,17,0,Math.PI*2);ctx.fill();ctx.strokeStyle="#ffffff66";ctx.lineWidth=2;ctx.stroke()}
+function add(a,b){return{x:a.x+b.x,y:a.y+b.y}}
+function rot(v,a){return{x:v.x*Math.cos(a)-v.y*Math.sin(a),y:v.x*Math.sin(a)+v.y*Math.cos(a)}}
+function IKArm(shoulder,hand,elbowSide){
+ // two-bone IK: returns a natural elbow between shoulder and hand.
+ const dx=hand.x-shoulder.x,dy=hand.y-shoulder.y,d=Math.hypot(dx,dy);
+ const L1=62,L2=58,D=clamp(d,30,L1+L2-1);
+ const base=Math.atan2(dy,dx);
+ const cos=(L1*L1+D*D-L2*L2)/(2*L1*D);
+ const a=Math.acos(clamp(cos,-1,1))*elbowSide;
+ return add(shoulder,rot({x:L1,y:0},base+a));
+}
+function poseArm(f,lead,baseY){
+ const front=f.enemy?-1:1; // player faces right; CPU mirrors
+ const shoulder={x:f.x+front*(lead?46:-46),y:baseY};
+ let hand,side;
+ const act=f.action;
+ if((act==="jab"&&lead)||(act==="cross"&&!lead)){
+  hand={x:f.x+front*(lead?116:122),y:baseY-2};
+  side=lead?-1:1;
+ }else if(act==="hook"){
+  hand={x:f.x+front*(lead?62:55),y:baseY-34};side=lead?-1:1;
+ }else if(act==="upper"){
+  hand={x:f.x+front*(lead?56:49),y:baseY+31};side=lead?1:-1;
+ }else{
+  // Compact orthodox guard: elbows low/inward, hands high.
+  hand={x:f.x+front*(lead?43:34),y:baseY-(lead?61:51)};
+  side=lead?-1:1;
+ }
+ const elbow=IKArm(shoulder,hand,side);
+ return {shoulder,elbow,hand};
+}
+function drawFighter(f){
+ ctx.save();
+ if(f.hit>0)ctx.globalAlpha=.68;
+ const x=f.x,ground=H*.87, bob=f.walk>0?Math.sin((.22-f.walk)*35)*3:0;
+ const front=f.enemy?-1:1;
+ // shadow
+ ctx.globalAlpha*=.25;ctx.fillStyle="#000";ctx.beginPath();ctx.ellipse(x,ground-8,72,13,0,0,Math.PI*2);ctx.fill();ctx.globalAlpha=f.hit>0?.68:1;
+ // stance: rear foot left for player, mirrored for CPU
+ const hip={x:x,y:ground-185+bob},frontHip={x:x+front*17,y:ground-181+bob},rearHip={x:x-front*17,y:ground-181+bob};
+ seg(frontHip,{x:frontHip.x+front*17,y:ground-62},25,C.skin);
+ seg(rearHip,{x:rearHip.x-front*15,y:ground-60},25,C.skin);
+ // shoes
+ ctx.fillStyle="#111820";ctx.beginPath();ctx.ellipse(frontHip.x+front*20,ground-50,28,11,0,0,Math.PI*2);ctx.fill();
+ ctx.beginPath();ctx.ellipse(rearHip.x-front*18,ground-49,28,11,0,0,Math.PI*2);ctx.fill();
+ // pelvis
+ ctx.fillStyle="#121a24";ctx.beginPath();ctx.roundRect(x-47,ground-215,94,55,10);ctx.fill();
+ // torso with slight lean
+ ctx.fillStyle=f.enemy?C.red:C.blue;ctx.beginPath();ctx.roundRect(x-50,ground-330,100,128,30);ctx.fill();
+ // shoulders
+ const shoulderY=ground-302+bob;
+ // neck
+ ctx.fillStyle=C.skin;ctx.fillRect(x-14,ground-350,28,28);
+ // head
+ ctx.beginPath();ctx.arc(x,ground-390,43,0,Math.PI*2);ctx.fill();
+ // hair
+ ctx.fillStyle="#181515";ctx.beginPath();ctx.arc(x,ground-402,44,Math.PI,Math.PI*2);ctx.fill();ctx.fillRect(x-42,ground-402,84,16);
+ // face facing direction
+ ctx.fillStyle="#1b2028";ctx.beginPath();ctx.arc(x+front*17,ground-392,4,0,Math.PI*2);ctx.fill();
+ ctx.beginPath();ctx.arc(x+front*31,ground-390,3,0,Math.PI*2);ctx.fill();
+ ctx.strokeStyle="#694131";ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(x+front*27,ground-373);ctx.lineTo(x+front*38,ground-374);ctx.stroke();
+ // arms: lead and rear are drawn separately, with joints
+ const lead=poseArm(f,true,shoulderY),rear=poseArm(f,false,shoulderY+3);
+ // rear first for depth
+ [rear,lead].forEach((a,i)=>{
+   seg(a.shoulder,a.elbow,24,C.skin);joint(a.elbow,12);seg(a.elbow,a.hand,23,C.skin);
+   glove(a.hand,i===0?(f.enemy?"#b9c3cf":"#dce3eb"):(f.enemy?"#c92f3b":"#ef4650"));
+ });
+ // glove seam
+ ctx.restore();
 }
 function draw(){
  ctx.clearRect(0,0,W,H);
- // ring
- const g=ctx.createLinearGradient(0,0,0,H);g.addColorStop(0,"#344255");g.addColorStop(.55,"#1d2938");g.addColorStop(1,"#0c131d");ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
- ctx.strokeStyle="#aeb8c4";ctx.lineWidth=5;
- [H*.38,H*.53,H*.68].forEach(y=>{ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke()});
+ const bg=ctx.createLinearGradient(0,0,0,H);bg.addColorStop(0,"#2b3a4d");bg.addColorStop(.56,"#1a2534");bg.addColorStop(1,"#0b1119");ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
+ // audience
+ ctx.fillStyle="#aeb8c333";for(let y=35;y<H*.32;y+=35)for(let x=20;x<W;x+=55){ctx.beginPath();ctx.arc(x+(y%70),y,3,0,7);ctx.fill()}
+ // ring ropes
+ [H*.37,H*.52,H*.67].forEach((y,i)=>{ctx.strokeStyle=i===1?"#eef2f7":"#c4ccd5";ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke()});
+ // floor
  ctx.fillStyle="#101923";ctx.fillRect(0,H*.70,W,H*.30);
- drawFighter(game.player,game.cpu.x);
- drawFighter(game.cpu,game.player.x);
+ ctx.strokeStyle="#344251";ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(0,H*.70);ctx.lineTo(W,H*.70);ctx.stroke();
+ drawFighter(game.player);drawFighter(game.cpu);
 }
-function drawFighter(f,targetX){
- const x=f.x,y=H*.62,flip=f.flip?-1:1;
- ctx.save(); if(f.hitFlash>0)ctx.globalAlpha=.65;
- // subtle body movement
- let lean=f.bodyLean;
- if(f.action==="slip")lean=flip*-.18;
- if(f.action==="duck")lean=flip*.03;
- if(["cross","jab","hook","upper"].includes(f.action))lean=flip*.035;
- // legs
- const hip={x:x+lean*30,y:y-45};
- ctx.strokeStyle="#b87850";ctx.lineWidth=25;ctx.lineCap="round";
- const footY=y+75;
- drawSeg(hip.x-18,hip.y+5,x-27,footY,0);
- drawSeg(hip.x+18,hip.y+5,x+27,footY,0);
- // shorts
- ctx.fillStyle="#151d29";roundRect(x-48,y-55,96,72,12);ctx.fill();
- // torso
- ctx.fillStyle=f.flip?"#c73743":"#2f78cf";roundRect(x-55,y-155,110,110,30);ctx.fill();
- // neck/head
- ctx.fillStyle="#bc7952";roundRect(x-15,y-175,30,30,8);ctx.fill();
- ctx.fillStyle="#bd7b54";ctx.beginPath();ctx.arc(x,y-205,43,0,Math.PI*2);ctx.fill();
- // hair
- ctx.fillStyle="#211b1b";ctx.beginPath();ctx.arc(x,y-216,43,Math.PI,Math.PI*2);ctx.fill();
- ctx.fillRect(x-42,y-216,84,16);
- // face
- ctx.fillStyle="#202733";ctx.beginPath();ctx.arc(x+flip*15,y-207,4,0,7);ctx.fill();
- ctx.beginPath();ctx.arc(x-flip*15,y-207,4,0,7);ctx.fill();
- ctx.strokeStyle="#5d382b";ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(x-6,y-190);ctx.lineTo(x+6,y-190);ctx.stroke();
- // arms as articulated bones
- const shoulderF={x:x+flip*48,y:y-130}, shoulderB={x:x-flip*48,y:y-130};
- drawArm(f,"lead",shoulderF,flip,targetX);
- drawArm(f,"rear",shoulderB,flip,targetX);
- ctx.restore();
-}
-function drawArm(f,side,s,flip,targetX){
- const isLead=side==="lead";
- const action=f.action;
- let upperAng,foreAng,gloveDist;
- if(action==="jab" && isLead){upperAng=0;foreAng=0;gloveDist=102}
- else if(action==="cross" && !isLead){upperAng=0;foreAng=0;gloveDist=112}
- else if(action==="hook" && ((isLead)||(!isLead))){upperAng=isLead?-.75:-2.4;foreAng=isLead?-.05:-3.0;gloveDist=62}
- else if(action==="upper" && ((isLead)||(!isLead))){upperAng=1.25;foreAng=-.15;gloveDist=70}
- else {
-   // authentic compact boxing guard: lead hand near face, rear hand at chin
-   upperAng=isLead?1.05:2.05;
-   foreAng=isLead?-1.05:-2.15;
-   gloveDist=isLead?56:49;
- }
- // rear arm is slightly farther back visually
- const upperLen=52;
- let elbow=pt(s,upperLen,upperAng);
- let glove=pt(elbow,gloveDist,foreAng);
- if((action==="jab"&&isLead)||(action==="cross"&&!isLead)){
-   glove.x=s.x+flip*105; glove.y=s.y+2;
-   elbow.x=s.x+flip*52; elbow.y=s.y+2;
- }
- // body connection
- ctx.strokeStyle="#bc7952";ctx.lineCap="round";
- ctx.lineWidth=27;ctx.beginPath();ctx.moveTo(s.x,s.y);ctx.lineTo(elbow.x,elbow.y);ctx.stroke();
- // elbow joint
- ctx.fillStyle="#c3835b";ctx.beginPath();ctx.arc(elbow.x,elbow.y,14,0,Math.PI*2);ctx.fill();
- ctx.lineWidth=25;ctx.beginPath();ctx.moveTo(elbow.x,elbow.y);ctx.lineTo(glove.x,glove.y);ctx.stroke();
- // glove
- ctx.fillStyle=isLead?"#ff4d58":"#4288ff";
- ctx.beginPath();ctx.arc(glove.x,glove.y,21,0,Math.PI*2);ctx.fill();
- // punch trail / extension cue
- if((action==="jab"&&isLead)||(action==="cross"&&!isLead)){
-   ctx.strokeStyle=ctx.fillStyle;ctx.globalAlpha=.18;ctx.lineWidth=12;
-   ctx.beginPath();ctx.moveTo(s.x,s.y);ctx.lineTo(glove.x,glove.y);ctx.stroke();ctx.globalAlpha=1;
- }
-}
-function drawSeg(x1,y1,x2,y2,rot){ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke()}
-function roundRect(x,y,w,h,r){ctx.beginPath();ctx.roundRect(x,y,w,h,r)}
-
-resize();
 </script>
 </body>
 </html>
